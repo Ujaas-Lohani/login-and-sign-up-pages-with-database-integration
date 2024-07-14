@@ -1,4 +1,4 @@
-# AngularPrimengApp
+# Login and Sign up pages with mysql integration using python fast api
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.3.
 
