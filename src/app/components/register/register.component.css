@@ -1,0 +1,4 @@
+.container {
+    padding-top: 15%; /* adjust the value to match the height of the header */
+    padding-bottom: 15%; /* adjust the value to match the height of the footer */
+  }
