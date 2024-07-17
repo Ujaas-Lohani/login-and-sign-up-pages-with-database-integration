@@ -51,13 +51,24 @@ export class RegisterComponent {
     this.authService.registerUser(postData as User).subscribe(
       response => {
         console.log(response);
+        if(response=='User already exists')
+        {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'User already exists' });
+          //this.router.navigate(['login'])
+        }
+        else{
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Register successfully' });
         this.router.navigate(['login'])
+        }
       },
       error => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong' });
+        if (error.status === 400 && error.error.detail === 'User already exists') {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'User already exists' });
+        } else {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Registration failed' });
+        }
       }
-    )
+    );
   }
 
 }
