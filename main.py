@@ -18,7 +18,7 @@ app.add_middleware(
 username = 'root'
 password = ''
 host = 'localhost'
-database = 'json'
+database = 'test'
 
 cnx = mysql.connector.connect(
     user=username,
@@ -39,7 +39,7 @@ class Userschema(BaseModel):
 async def get_user_by_email(email: str):
     try:
         logging.info(f"Received request for user with email {email}")
-        query = "SELECT * FROM users WHERE email = %s"
+        query = "SELECT * FROM customer WHERE CSTM_EMAIL = %s"
         cursor.execute(query, (email,))
         user = cursor.fetchone()
         if user is None:
@@ -47,7 +47,7 @@ async def get_user_by_email(email: str):
             raise HTTPException(status_code=404, detail="User not found")
         return [
             {
-                "fullName": user[1],
+                "fullname": user[1],
                 "email": user[2],
                 "password": user[3],
                 "id": str(user[0])
@@ -65,9 +65,14 @@ class User(BaseModel):
 
 @app.post("/users/")
 async def create_user(user: User):
-    query = "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)"
-    cursor.execute(query, (user.fullName, user.email, user.password))
-
-    cnx.commit()
-    return {"message": "User created successfully"}
+        query = "SELECT CSTM_EMAIL FROM customer WHERE CSTM_EMAIL = %s"
+        cursor.execute(query, (user.email,))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            return {"User already exists"}
+        else:
+            query = "INSERT INTO customer (CSTM_NAME, CSTM_EMAIL, PASSWORD) VALUES (%s, %s, %s)"
+            cursor.execute(query, (user.fullName, user.email, user.password))
+            cnx.commit()
+            return {"message": "User created successfully"}
         
